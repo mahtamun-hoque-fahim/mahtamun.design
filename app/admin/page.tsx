@@ -73,7 +73,7 @@ export default async function AdminDashboard() {
           {recentMessages.length === 0 ? (
             <div className="px-6 py-8 text-center font-onest text-sm text-muted">No messages yet.</div>
           ) : (
-            recentMessages.map(m => (
+            recentMessages.map((m: typeof recentMessages[0]) => (
               <div key={m.id} className="flex items-start gap-4 px-6 py-4">
                 <div className={`mt-1 h-2 w-2 rounded-full shrink-0 ${m.read ? 'bg-muted' : 'bg-accent'}`} />
                 <div className="flex-1 min-w-0">
