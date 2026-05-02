@@ -178,7 +178,14 @@ body::after {
   margin-bottom: 6px;
 }
 
-/* ── Tag / badge ── */
+/* ── Service card hover ── */
+.service-card {
+  background: var(--col-bg);
+}
+.service-card:hover {
+  background: var(--col-surface);
+}
+
 .tag {
   display: inline-flex;
   align-items: center;

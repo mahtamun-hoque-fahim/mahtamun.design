@@ -1,3 +1,4 @@
+'use client'
 import { Layers, Monitor, Share2, Printer } from 'lucide-react'
 import Link from 'next/link'
 
@@ -57,14 +58,7 @@ export default function Services() {
             return (
               <div
                 key={s.n}
-                className="group p-8 flex flex-col gap-5 transition-colors duration-300"
-                style={{ background: 'var(--col-bg)' }}
-                onMouseEnter={e => {
-                  ;(e.currentTarget as HTMLDivElement).style.background = 'var(--col-surface)'
-                }}
-                onMouseLeave={e => {
-                  ;(e.currentTarget as HTMLDivElement).style.background = 'var(--col-bg)'
-                }}
+                className="group p-8 flex flex-col gap-5 transition-colors duration-300 service-card"
               >
                 <div className="flex items-start justify-between">
                   <div
