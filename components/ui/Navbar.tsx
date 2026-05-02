@@ -1,77 +1,112 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 const links = [
-  { href: '/', label: 'Home' },
   { href: '/work', label: 'Work' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ]
 
 export default function Navbar() {
-  const pathname = usePathname()
+  const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => { setOpen(false) }, [pathname])
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-bg/80 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-syne font-bold text-xl tracking-tight">
-          <span className="text-white">MAHTAMUN</span>
-          <span className="text-accent">.</span>
-        </Link>
-
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {links.map(l => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={cn(
-                'font-onest text-sm transition-colors hover:text-accent',
-                pathname === l.href ? 'text-accent' : 'text-[#999]'
-              )}
+    <>
+      <header
+        className="fixed top-0 inset-x-0 z-50 transition-all duration-500"
+        style={{
+          background: scrolled ? 'rgba(7,7,7,0.92)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(16px)' : 'none',
+          borderBottom: scrolled ? '1px solid var(--col-border)' : '1px solid transparent',
+        }}
+      >
+        <div className="container flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-baseline gap-1 group">
+            <span
+              className="font-display text-xl font-semibold tracking-tight"
+              style={{ color: 'var(--col-text)' }}
             >
-              {l.label}
-            </Link>
-          ))}
-          <Link
-            href="/contact"
-            className="rounded-full bg-accent px-5 py-2 font-onest text-sm font-medium text-bg transition-opacity hover:opacity-90"
-          >
-            Hire Me
+              MAHTAMUN
+            </span>
+            <span
+              className="font-mono text-xs"
+              style={{ color: 'var(--col-accent)' }}
+            >
+              .design
+            </span>
           </Link>
-        </div>
 
-        {/* Mobile */}
-        <button onClick={() => setOpen(!open)} className="md:hidden text-[#999] hover:text-white transition-colors">
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
-      </nav>
-
-      {/* Mobile menu */}
-      {open && (
-        <div className="md:hidden border-t border-border bg-bg/95 backdrop-blur-xl">
-          <div className="flex flex-col gap-1 px-6 py-4">
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-8">
             {links.map(l => (
               <Link
                 key={l.href}
                 href={l.href}
-                onClick={() => setOpen(false)}
-                className={cn(
-                  'py-3 font-onest text-sm border-b border-border/40 transition-colors hover:text-accent',
-                  pathname === l.href ? 'text-accent' : 'text-[#999]'
-                )}
+                className="font-sans text-sm tracking-wide transition-colors duration-200"
+                style={{
+                  color: pathname === l.href ? 'var(--col-text)' : 'var(--col-text-2)',
+                }}
               >
                 {l.label}
               </Link>
             ))}
-          </div>
+            <Link href="/contact" className="btn btn-accent text-xs">
+              Hire Me
+            </Link>
+          </nav>
+
+          {/* Mobile toggle */}
+          <button
+            onClick={() => setOpen(v => !v)}
+            className="md:hidden p-2"
+            style={{ color: 'var(--col-text-2)' }}
+            aria-label="Toggle menu"
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
-      )}
-    </header>
+      </header>
+
+      {/* Mobile menu */}
+      <div
+        className="fixed inset-0 z-40 md:hidden transition-all duration-300"
+        style={{
+          background: 'var(--col-bg)',
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? 'all' : 'none',
+          transform: open ? 'translateY(0)' : 'translateY(-8px)',
+        }}
+      >
+        <div className="container pt-24 flex flex-col gap-6">
+          {links.map(l => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="font-display text-4xl italic font-light border-b pb-4"
+              style={{ borderColor: 'var(--col-border)', color: 'var(--col-text)' }}
+            >
+              {l.label}
+            </Link>
+          ))}
+          <Link href="/contact" className="btn btn-accent mt-4 self-start">
+            Hire Me
+          </Link>
+        </div>
+      </div>
+    </>
   )
 }

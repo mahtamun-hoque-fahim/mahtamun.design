@@ -1,66 +1,106 @@
-import { Layers, Monitor, Palette, BarChart2, PenTool, Globe } from 'lucide-react'
+import { Layers, Monitor, Share2, Printer } from 'lucide-react'
+import Link from 'next/link'
 
 const services = [
   {
-    icon: Palette,
+    n: '01',
+    icon: Layers,
     title: 'Brand Identity',
-    desc: 'Complete brand systems — logo, typography, color palette, brand guidelines, and all visual touchpoints.',
+    desc: 'Complete visual identity systems that communicate who you are and why you matter. Logo, colour palette, typography, and brand guidelines built to last.',
+    deliverables: ['Logo design', 'Brand guidelines', 'Colour system', 'Typography', 'Business collateral'],
   },
   {
+    n: '02',
     icon: Monitor,
     title: 'UI/UX Design',
-    desc: 'User-centered digital interfaces for web and mobile. From wireframes to pixel-perfect Figma designs.',
+    desc: 'Interfaces that are beautiful and effortless. From wireframes to polished high-fidelity designs your developers can build from.',
+    deliverables: ['Web design', 'App design', 'Design system', 'Prototyping', 'User flows'],
   },
   {
-    icon: PenTool,
-    title: 'Logo Design',
-    desc: 'Memorable, versatile logos that communicate your brand essence and stand out in the market.',
-  },
-  {
-    icon: BarChart2,
+    n: '03',
+    icon: Share2,
     title: 'Social Media',
-    desc: 'Scroll-stopping content design — posts, stories, ads, and templates that build brand presence.',
+    desc: 'Scroll-stopping content designs for every platform. Consistent, on-brand visuals that build recognition and engagement.',
+    deliverables: ['Post templates', 'Story templates', 'Reel thumbnails', 'Profile setup', 'Ad creatives'],
   },
   {
-    icon: Layers,
+    n: '04',
+    icon: Printer,
     title: 'Print Design',
-    desc: 'Business cards, brochures, packaging, and all print collateral crafted with precision.',
-  },
-  {
-    icon: Globe,
-    title: 'Web Development',
-    desc: 'Full-stack web builds with Next.js — fast, accessible, and beautifully designed.',
+    desc: 'Print-ready designs that make a lasting impression in the physical world. Every detail crafted for production.',
+    deliverables: ['Business cards', 'Brochures', 'Flyers', 'Banners', 'Packaging'],
   },
 ]
 
 export default function Services() {
   return (
-    <section className="px-6 py-24">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-16 max-w-xl">
-          <span className="font-mono text-xs text-accent uppercase tracking-widest">What I Do</span>
-          <h2 className="mt-3 font-syne font-bold text-4xl md:text-5xl">
-            Services Built for<br />
-            <span className="text-gradient">Real Impact</span>
-          </h2>
+    <section className="py-28">
+      <div className="container">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
+          <div>
+            <p className="section-label mb-4">Services</p>
+            <h2
+              className="font-display font-semibold"
+              style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
+            >
+              What I Do
+            </h2>
+          </div>
+          <Link href="/contact" className="btn btn-outline self-start sm:self-auto">
+            Get a Quote
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {services.map((s, i) => (
-            <div
-              key={s.title}
-              className="group rounded-2xl border border-border bg-surface p-6 transition-all hover:border-accent/40 hover:bg-surface-2"
-            >
-              <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface-2 text-accent transition-all group-hover:border-accent/40 group-hover:bg-accent/10">
-                <s.icon size={22} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px" style={{ background: 'var(--col-border)' }}>
+          {services.map(s => {
+            const Icon = s.icon
+            return (
+              <div
+                key={s.n}
+                className="group p-8 flex flex-col gap-5 transition-colors duration-300"
+                style={{ background: 'var(--col-bg)' }}
+                onMouseEnter={e => {
+                  ;(e.currentTarget as HTMLDivElement).style.background = 'var(--col-surface)'
+                }}
+                onMouseLeave={e => {
+                  ;(e.currentTarget as HTMLDivElement).style.background = 'var(--col-bg)'
+                }}
+              >
+                <div className="flex items-start justify-between">
+                  <div
+                    className="w-10 h-10 rounded-sm flex items-center justify-center"
+                    style={{ background: 'var(--col-accent-dim)', border: '1px solid rgba(200,255,0,0.15)' }}
+                  >
+                    <Icon size={18} style={{ color: 'var(--col-accent)' }} />
+                  </div>
+                  <span
+                    className="font-mono text-xs"
+                    style={{ color: 'var(--col-text-3)' }}
+                  >
+                    {s.n}
+                  </span>
+                </div>
+
+                <div>
+                  <h3
+                    className="font-display text-2xl font-semibold mb-3"
+                    style={{ color: 'var(--col-text)' }}
+                  >
+                    {s.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--col-text-2)' }}>
+                    {s.desc}
+                  </p>
+                </div>
+
+                <ul className="flex flex-wrap gap-2 mt-auto">
+                  {s.deliverables.map(d => (
+                    <li key={d} className="tag">{d}</li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="font-syne font-semibold text-lg mb-2">{s.title}</h3>
-              <p className="font-onest text-sm text-muted leading-relaxed">{s.desc}</p>
-              <div className="mt-4 font-mono text-xs text-accent/50 group-hover:text-accent transition-colors">
-                0{i + 1} —
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>

@@ -1,45 +1,58 @@
 import type { Metadata } from 'next'
-import { Syne, Onest, JetBrains_Mono } from 'next/font/google'
+import { Cormorant, Outfit, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 
-const syne = Syne({
+const cormorant = Cormorant({
   subsets: ['latin'],
-  variable: '--font-syne',
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
+  display: 'swap',
 })
 
-const onest = Onest({
+const outfit = Outfit({
   subsets: ['latin'],
-  variable: '--font-onest',
-  weight: ['300', '400', '500', '600'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-outfit',
+  display: 'swap',
 })
 
-const jetbrainsMono = JetBrains_Mono({
+const jetbrains = JetBrains_Mono({
   subsets: ['latin'],
-  variable: '--font-mono',
   weight: ['400', '500'],
+  variable: '--font-jetbrains',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: { default: 'MAHTAMUN — Graphic Designer & UI/UX', template: '%s | MAHTAMUN' },
-  description: 'Graphic designer, UI/UX designer & full-stack developer crafting brand identities, digital products, and visual experiences.',
-  keywords: ['graphic designer', 'ui ux designer', 'brand identity', 'logo design', 'bangladesh'],
+  title: {
+    default: 'MAHTAMUN — Graphic Designer & Creative Director',
+    template: '%s | MAHTAMUN',
+  },
+  description:
+    'Graphic designer and creative director specialising in brand identity, UI/UX and visual storytelling that converts browsers into believers.',
+  keywords: ['graphic designer', 'brand identity', 'logo design', 'UI/UX', 'Bangladesh'],
   authors: [{ name: 'Mahtamun Hoque Fahim' }],
   openGraph: {
-    title: 'MAHTAMUN — Graphic Designer & UI/UX',
-    description: 'Crafting brand identities, digital products, and visual experiences.',
+    title: 'MAHTAMUN — Graphic Designer & Creative Director',
+    description:
+      'Brand identity, UI/UX and graphic design that makes your business unforgettable.',
     type: 'website',
     locale: 'en_US',
   },
-  twitter: { card: 'summary_large_image' },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MAHTAMUN — Graphic Designer',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${syne.variable} ${onest.variable} ${jetbrainsMono.variable} bg-bg text-[#e8e8e8] antialiased`}>
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={`${cormorant.variable} ${outfit.variable} ${jetbrains.variable}`}
+    >
+      <body>{children}</body>
     </html>
   )
 }

@@ -1,5 +1,5 @@
 import {
-  pgTable, serial, text, timestamp, integer, boolean, varchar,
+  pgTable, serial, text, timestamp, boolean, integer, json,
 } from 'drizzle-orm/pg-core'
 
 export const projects = pgTable('projects', {
@@ -7,15 +7,15 @@ export const projects = pgTable('projects', {
   title: text('title').notNull(),
   slug: text('slug').notNull().unique(),
   category: text('category').notNull().default('branding'),
-  description: text('description').notNull(),
-  longDescription: text('long_description'),
+  description: text('description'),
+  content: text('content'),
   coverImage: text('cover_image'),
-  images: text('images').array(),
-  tags: text('tags').array(),
+  images: json('images').$type<string[]>().default([]),
   client: text('client'),
-  year: varchar('year', { length: 4 }),
+  year: integer('year'),
+  tags: json('tags').$type<string[]>().default([]),
   featured: boolean('featured').default(false),
-  order: integer('order').default(0),
+  published: boolean('published').default(true),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 })
@@ -26,23 +26,34 @@ export const messages = pgTable('messages', {
   email: text('email').notNull(),
   subject: text('subject'),
   message: text('message').notNull(),
+  budget: text('budget'),
+  service: text('service'),
   read: boolean('read').default(false),
   createdAt: timestamp('created_at').defaultNow(),
 })
 
-export const reviews = pgTable('reviews', {
+export const siteContent = pgTable('site_content', {
+  id: serial('id').primaryKey(),
+  key: text('key').notNull().unique(),
+  value: text('value').notNull(),
+  type: text('type').default('text'),
+  updatedAt: timestamp('updated_at').defaultNow(),
+})
+
+export const testimonials = pgTable('testimonials', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
   role: text('role'),
   company: text('company'),
   avatar: text('avatar'),
-  rating: integer('rating').default(5),
   content: text('content').notNull(),
-  featured: boolean('featured').default(false),
+  rating: integer('rating').default(5),
+  published: boolean('published').default(true),
   createdAt: timestamp('created_at').defaultNow(),
 })
 
 export type Project = typeof projects.$inferSelect
 export type NewProject = typeof projects.$inferInsert
 export type Message = typeof messages.$inferSelect
-export type Review = typeof reviews.$inferSelect
+export type SiteContent = typeof siteContent.$inferSelect
+export type Testimonial = typeof testimonials.$inferSelect

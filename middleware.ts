@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
 
-  // Protect all /admin/* routes except /admin/login
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
-    const token = req.cookies.get('admin-token')?.value
-    if (!token) {
-      return NextResponse.redirect(new URL('/admin/login', req.url))
+    const token = request.cookies.get('admin-token')
+    if (!token?.value) {
+      return NextResponse.redirect(new URL('/admin/login', request.url))
+    }
+  }
+
+  if (pathname === '/admin/login') {
+    const token = request.cookies.get('admin-token')
+    if (token?.value) {
+      return NextResponse.redirect(new URL('/admin', request.url))
     }
   }
 

@@ -1,60 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { projects } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
-import { cookies } from 'next/headers'
+import { desc } from 'drizzle-orm'
 import { slugify } from '@/lib/utils'
 
-function isAuthenticated() {
-  const token = cookies().get('admin-token')?.value
-  return !!token
-}
-
 export async function GET() {
-  if (!isAuthenticated()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const db = getDb()
-  if (!db) return NextResponse.json({ error: 'DB unavailable' }, { status: 503 })
-
-  const all = await db.select().from(projects).orderBy(projects.order)
-  return NextResponse.json(all)
+  try {
+    const db = getDb()
+    const all = await db.select().from(projects).orderBy(desc(projects.createdAt))
+    return NextResponse.json(all)
+  } catch {
+    return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 })
+  }
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAuthenticated()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  try {
+    const body = await req.json()
+    const { title, category, description, content, coverImage, images, client, year, tags, featured, published } = body
 
-  const db = getDb()
-  if (!db) return NextResponse.json({ error: 'DB unavailable' }, { status: 503 })
+    if (!title?.trim()) return NextResponse.json({ error: 'Title required' }, { status: 400 })
 
-  const body = await req.json()
-  const slug = body.slug || slugify(body.title)
+    const db = getDb()
+    const slug = slugify(title) + '-' + Date.now().toString(36)
 
-  const [created] = await db.insert(projects).values({ ...body, slug }).returning()
-  return NextResponse.json(created)
-}
+    const [created] = await db
+      .insert(projects)
+      .values({
+        title: title.trim(),
+        slug,
+        category: category ?? 'branding',
+        description: description ?? null,
+        content: content ?? null,
+        coverImage: coverImage ?? null,
+        images: images ?? [],
+        client: client ?? null,
+        year: year ? Number(year) : null,
+        tags: tags ?? [],
+        featured: featured ?? false,
+        published: published ?? true,
+      })
+      .returning()
 
-export async function PUT(req: NextRequest) {
-  if (!isAuthenticated()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const db = getDb()
-  if (!db) return NextResponse.json({ error: 'DB unavailable' }, { status: 503 })
-
-  const body = await req.json()
-  const { id, ...data } = body
-
-  const [updated] = await db.update(projects).set({ ...data, updatedAt: new Date() }).where(eq(projects.id, id)).returning()
-  return NextResponse.json(updated)
-}
-
-export async function DELETE(req: NextRequest) {
-  if (!isAuthenticated()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const db = getDb()
-  if (!db) return NextResponse.json({ error: 'DB unavailable' }, { status: 503 })
-
-  const { searchParams } = new URL(req.url)
-  const id = Number(searchParams.get('id'))
-
-  await db.delete(projects).where(eq(projects.id, id))
-  return NextResponse.json({ ok: true })
+    return NextResponse.json(created, { status: 201 })
+  } catch {
+    return NextResponse.json({ error: 'Failed to create' }, { status: 500 })
+  }
 }

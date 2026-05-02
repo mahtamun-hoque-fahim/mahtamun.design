@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+
 const config: Config = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -7,26 +8,46 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-        accent: '#00e676',
-        bg: '#0a0a0a',
-        surface: '#111111',
-        'surface-2': '#1a1a1a',
-        border: '#222222',
-        muted: '#555555',
-      },
       fontFamily: {
-        syne: ['var(--font-syne)', 'sans-serif'],
-        onest: ['var(--font-onest)', 'sans-serif'],
-        mono: ['var(--font-mono)', 'monospace'],
+        display: ['var(--font-cormorant)', 'serif'],
+        sans: ['var(--font-outfit)', 'sans-serif'],
+        mono: ['var(--font-jetbrains)', 'monospace'],
+      },
+      colors: {
+        accent: '#C8FF00',
+        'accent-fg': '#070707',
+        bg: '#070707',
+        surface: '#0E0E0E',
+        'surface-2': '#161616',
+        border: '#222222',
+        'border-2': '#333333',
+        tx: '#F0EDE4',
+        'tx-2': '#9B9B9B',
+        'tx-3': '#555555',
       },
       animation: {
-        'fade-in': 'fadeIn 0.6s ease forwards',
-        'slide-up': 'slideUp 0.6s ease forwards',
+        marquee: 'marquee 35s linear infinite',
+        'fade-up': 'fadeUp 0.6s ease forwards',
+        'fade-in': 'fadeIn 0.4s ease forwards',
+        'pulse-dot': 'pulseDot 2s ease-in-out infinite',
       },
       keyframes: {
-        fadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
-        slideUp: { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        fadeUp: {
+          from: { opacity: '0', transform: 'translateY(24px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        fadeIn: {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        pulseDot: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.3' },
+        },
       },
     },
   },
