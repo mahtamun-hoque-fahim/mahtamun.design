@@ -9,12 +9,12 @@ export const metadata: Metadata = {
   description: 'Graphic design, brand identity and UI/UX projects by Mahtamun Hoque Fahim.',
 }
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 async function getProjects() {
   try {
     const db = getDb()
-    return db.select().from(projects).where(eq(projects.published, true)).orderBy(desc(projects.createdAt))
+    return await db.select().from(projects).where(eq(projects.published, true)).orderBy(desc(projects.createdAt))
   } catch {
     return []
   }

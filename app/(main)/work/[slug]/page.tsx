@@ -8,7 +8,7 @@ import { projects } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { formatDate } from '@/lib/utils'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 interface Props {
   params: Promise<{ slug: string }>

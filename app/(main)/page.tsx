@@ -10,7 +10,7 @@ import TestimonialsSection from '@/components/sections/Testimonials'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 async function getData() {
   try {
