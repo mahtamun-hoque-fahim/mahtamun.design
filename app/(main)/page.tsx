@@ -1,5 +1,5 @@
 import { getDb } from '@/lib/db'
-import { projects, testimonials } from '@/lib/db/schema'
+import { projects, testimonials, siteContent } from '@/lib/db/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import Hero from '@/components/sections/Hero'
 import MarqueeTicker from '@/components/sections/MarqueeTicker'
@@ -15,25 +15,28 @@ export const dynamic = 'force-dynamic'
 async function getData() {
   try {
     const db = getDb()
-    const [feat, testi] = await Promise.all([
+    const [feat, testi, content] = await Promise.all([
       db.select().from(projects).where(and(eq(projects.featured, true), eq(projects.published, true))).orderBy(desc(projects.createdAt)).limit(6),
       db.select().from(testimonials).where(eq(testimonials.published, true)).orderBy(desc(testimonials.createdAt)).limit(3),
+      db.select().from(siteContent),
     ])
-    return { featuredProjects: feat, testimonials: testi }
+    const tileImages = [0, 1, 2, 3].map(i =>
+      content.find(c => c.key === `hero.tile.${i}`)?.value ?? ''
+    )
+    return { featuredProjects: feat, testimonials: testi, tileImages }
   } catch {
-    return { featuredProjects: [], testimonials: [] }
+    return { featuredProjects: [], testimonials: [], tileImages: ['', '', '', ''] }
   }
 }
 
 export default async function HomePage() {
-  const { featuredProjects, testimonials: testi } = await getData()
+  const { featuredProjects, testimonials: testi, tileImages } = await getData()
 
   return (
     <>
-      <Hero featuredProjects={featuredProjects} />
+      <Hero featuredProjects={featuredProjects} tileImages={tileImages} />
       <MarqueeTicker />
 
-      {/* Selected work preview */}
       {featuredProjects.length > 0 && (
         <section className="py-28">
           <div className="container">

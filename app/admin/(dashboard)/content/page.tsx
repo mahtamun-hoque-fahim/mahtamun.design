@@ -1,6 +1,7 @@
 import { getDb } from '@/lib/db'
 import { siteContent } from '@/lib/db/schema'
 import ContentEditor from '@/components/admin/ContentEditor'
+import HeroTilesEditor from '@/components/admin/HeroTilesEditor'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,6 +13,8 @@ const DEFAULT_CONTENT = [
   { key: 'social.github', value: 'https://github.com/mahtamun-hoque-fahim', type: 'text', label: 'GitHub URL' },
   { key: 'social.linkedin', value: 'https://linkedin.com/in/mahtamun-hoque-fahim', type: 'text', label: 'LinkedIn URL' },
 ]
+
+const HERO_TILE_KEYS = ['hero.tile.0', 'hero.tile.1', 'hero.tile.2', 'hero.tile.3']
 
 export default async function AdminContentPage() {
   let existing: any[] = []
@@ -25,15 +28,33 @@ export default async function AdminContentPage() {
     return { ...d, value: found?.value ?? d.value }
   })
 
+  const tileImages = Object.fromEntries(
+    HERO_TILE_KEYS.map(key => [
+      key,
+      existing.find(e => e.key === key)?.value ?? '',
+    ])
+  )
+
   return (
-    <div className="p-8">
-      <div className="mb-8">
+    <div className="p-8 flex flex-col gap-12">
+      <div>
         <h1 className="font-display text-3xl font-semibold">Site Content</h1>
         <p className="text-sm mt-1" style={{ color: 'var(--col-text-2)' }}>
-          Edit text content across your portfolio without touching code.
+          Manage text content and images across your portfolio.
         </p>
       </div>
-      <ContentEditor fields={merged} />
+
+      <div
+        className="rounded-sm p-6"
+        style={{ background: 'var(--col-surface)', border: '1px solid var(--col-border)' }}
+      >
+        <HeroTilesEditor initial={tileImages} />
+      </div>
+
+      <div>
+        <h2 className="font-display text-xl font-semibold mb-5">Text Content</h2>
+        <ContentEditor fields={merged} />
+      </div>
     </div>
   )
 }

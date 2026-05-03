@@ -5,16 +5,19 @@ import type { Project } from '@/lib/db/schema'
 
 interface HeroProps {
   featuredProjects: Project[]
+  tileImages: string[]
 }
 
+const TILE_LABELS = ['Brand Identity', 'UI/UX Design', 'Logo Design', 'Social Media']
+
 const PLACEHOLDER_GRADIENTS = [
-  'linear-gradient(135deg, #C8FF00 0%, #00e676 100%)',
+  'linear-gradient(135deg, #00e676 0%, #1de9b6 100%)',
   'linear-gradient(135deg, #7B2FBE 0%, #3FA4F4 100%)',
   'linear-gradient(135deg, #FF4136 0%, #FF85A1 100%)',
   'linear-gradient(135deg, #FF8C00 0%, #FFEF00 100%)',
 ]
 
-export default function Hero({ featuredProjects }: HeroProps) {
+export default function Hero({ featuredProjects, tileImages }: HeroProps) {
   const items = featuredProjects.slice(0, 4)
 
   return (
@@ -102,19 +105,21 @@ export default function Hero({ featuredProjects }: HeroProps) {
         <div className="flex-1 w-full hidden lg:grid grid-cols-2 gap-3" style={{ maxWidth: 520, height: 560 }}>
           {[0, 1, 2, 3].map(i => {
             const project = items[i]
+            // Priority: featured project image → admin-uploaded tile image → gradient placeholder
+            const imgSrc = project?.coverImage || tileImages[i] || null
+
             return (
               <div
                 key={i}
                 className="relative overflow-hidden rounded-sm group"
                 style={{
-                  gridRow: i === 0 ? 'span 1' : undefined,
-                  background: project?.coverImage ? undefined : PLACEHOLDER_GRADIENTS[i],
+                  background: imgSrc ? undefined : PLACEHOLDER_GRADIENTS[i],
                 }}
               >
-                {project?.coverImage ? (
+                {imgSrc ? (
                   <Image
-                    src={project.coverImage}
-                    alt={project.title}
+                    src={imgSrc}
+                    alt={project?.title ?? TILE_LABELS[i]}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
@@ -124,16 +129,20 @@ export default function Hero({ featuredProjects }: HeroProps) {
                       className="font-display italic text-sm opacity-60"
                       style={{ color: '#070707' }}
                     >
-                      {['Brand Identity', 'UI/UX Design', 'Logo Design', 'Social Media'][i]}
+                      {TILE_LABELS[i]}
                     </span>
                   </div>
                 )}
-                {project && (
-                  <div className="absolute inset-0 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{ background: 'linear-gradient(to top, rgba(7,7,7,0.9) 0%, transparent 60%)' }}>
-                    <p className="font-sans text-xs text-white">{project.title}</p>
-                  </div>
-                )}
+
+                {/* Label overlay on hover */}
+                <div
+                  className="absolute inset-0 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: 'linear-gradient(to top, rgba(7,7,7,0.85) 0%, transparent 60%)' }}
+                >
+                  <p className="font-mono text-xs" style={{ color: 'var(--col-accent)' }}>
+                    {project?.title ?? TILE_LABELS[i]}
+                  </p>
+                </div>
               </div>
             )
           })}
