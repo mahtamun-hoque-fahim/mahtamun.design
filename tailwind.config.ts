@@ -14,7 +14,7 @@ const config: Config = {
         mono: ['var(--font-jetbrains)', 'monospace'],
       },
       colors: {
-        accent: '#C8FF00',
+        accent: '#00e676',
         'accent-fg': '#070707',
         bg: '#070707',
         surface: '#0E0E0E',
