@@ -21,7 +21,7 @@ async function getData() {
       db.select().from(siteContent),
     ])
     const tileImages = [0, 1, 2, 3].map(i =>
-      content.find(c => c.key === `hero.tile.${i}`)?.value ?? ''
+      content.find((c: { key: string; value: string }) => c.key === `hero.tile.${i}`)?.value ?? ''
     )
     return { featuredProjects: feat, testimonials: testi, tileImages }
   } catch {
